@@ -1,0 +1,49 @@
+<ion-content [fullscreen]="true">
+  <div id="container">
+    <strong>Timer</strong>
+    <div style="width: 300px">
+      <ion-item>
+        <ion-input
+          class="timer"
+          type="number"
+          placeholder="hours"
+          min="0"
+          max="24"
+          name="hours"
+          [(ngModel)]="hours"
+          (change)="checkValue(hours,'hours')"
+          ></ion-input>
+        :
+        <ion-input
+          class="timer"
+          type="number"
+          placeholder="minutes"
+          min="0"
+          max="60"
+          name="minutes"
+          [(ngModel)]="minutes"
+          maxlength="2"
+          (change)="checkValue(minutes,'minutes')"
+        ></ion-input>
+        :
+        <ion-input
+          class="timer"
+          type="number"
+          placeholder="seconds"
+          min="0"
+          max="60"
+          name="seconds"
+          [(ngModel)]="seconds"
+          maxlength="2"
+          (change)="checkValue(seconds,'seconds')"
+        ></ion-input
+      ></ion-item>
+    </div>
+    <br />
+    <div>
+      <ion-button color="success" (click)="play()">Play</ion-button>
+      <ion-button color="danger" (click)="stop()">Stop</ion-button>
+      <ion-button color="dark" (click)="reset()">Reset</ion-button>
+    </div>
+  </div>
+</ion-content>
