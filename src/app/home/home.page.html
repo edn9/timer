@@ -1,49 +1,52 @@
 <ion-content [fullscreen]="true">
   <div id="container">
-    <strong>Timer</strong>
-    <div style="width: 300px">
-      <ion-item>
-        <ion-input
-          class="timer"
-          type="number"
-          placeholder="hours"
-          min="0"
-          max="24"
-          name="hours"
-          [(ngModel)]="hours"
-          (change)="checkValue(hours,'hours')"
-          ></ion-input>
-        :
-        <ion-input
-          class="timer"
-          type="number"
-          placeholder="minutes"
-          min="0"
-          max="60"
-          name="minutes"
-          [(ngModel)]="minutes"
-          maxlength="2"
-          (change)="checkValue(minutes,'minutes')"
-        ></ion-input>
-        :
-        <ion-input
-          class="timer"
-          type="number"
-          placeholder="seconds"
-          min="0"
-          max="60"
-          name="seconds"
-          [(ngModel)]="seconds"
-          maxlength="2"
-          (change)="checkValue(seconds,'seconds')"
-        ></ion-input
-      ></ion-item>
-    </div>
-    <br />
-    <div>
-      <ion-button color="success" (click)="play()">Play</ion-button>
-      <ion-button color="danger" (click)="stop()">Stop</ion-button>
-      <ion-button color="dark" (click)="reset()">Reset</ion-button>
-    </div>
+    <ion-card>
+      <ion-card-content>
+        <ion-card-header>
+          <div style="width: 100%;
+          justify-content: center;
+          align-items: center;
+          display: flex;">
+            <ion-img style="width: 50px;" src="/assets/icon/clock.png" alt="clock"></ion-img>
+          </div>
+
+          <ion-card-title>
+            Online Timer with Alarm
+          </ion-card-title>
+
+          <small> Create your timer with alarm and start/pause/stop/reset. <br>
+            Perfect for everyday activities such as cooking meals, taking quizzes, etc.</small>
+
+
+        </ion-card-header>
+        <hr style="background: #121212;">
+
+        <div style="display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;">
+          <ion-item style="width: 100%;">
+            <ion-input class="timer" type="number" placeholder="hours" min="0" name="hours" [(ngModel)]="hours"
+              (change)="checkValue(hours,'hours')"></ion-input>
+            :
+            <ion-input class="timer" type="number" placeholder="minutes" min="0" max="59" name="minutes"
+              [(ngModel)]="minutes" maxlength="2" (change)="checkValue(minutes,'minutes')"></ion-input>
+            :
+            <ion-input class="timer" type="number" placeholder="seconds" min="0" max="59" name="seconds"
+              [(ngModel)]="seconds" maxlength="2" (change)="checkValue(seconds,'seconds')"></ion-input>
+          </ion-item>
+        </div>
+        <div>
+          <ion-button color="success" (click)="play()" [disabled]="disableButton()">Play</ion-button>
+          <ion-button color="danger" (click)="stop()">Stop</ion-button>
+          <ion-button color="dark" (click)="reset()">Reset</ion-button>
+        </div>
+        <hr style="background: #121212;">
+
+        <small>made by edn9 - v.0.0.2</small>
+      </ion-card-content>
+    </ion-card>
+
   </div>
+
 </ion-content>

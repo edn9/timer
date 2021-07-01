@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { AlertController } from '@ionic/angular';
 
 @Component({
@@ -12,7 +13,7 @@ export class HomePage {
   seconds = 0;
   interval;
 
-  constructor(public alertController: AlertController) {}
+  constructor(public alertController: AlertController, private titleService: Title) { }
 
   playAlert() {
     let audio = new Audio();
@@ -23,10 +24,11 @@ export class HomePage {
 
   play() {
     this.clearCounter();
-    console.log('play', this.hours, this.minutes, this.seconds);
+    //console.log('play', this.hours, this.minutes, this.seconds);
 
     this.interval = setInterval(() => {
       if (this.hours === 0 && this.minutes === 0 && this.seconds === 0) {
+        this.titleService.setTitle('Timer');
         this.playAlert();
         this.clearCounter();
       } else {
@@ -40,29 +42,57 @@ export class HomePage {
           this.hours--;
         }
         this.seconds--;
+
+        this.titleService.setTitle(this.hours.toString() + ':' + this.minutes.toString() + ':' + this.seconds.toString());
+        //console.log(this.hours.toString() + ':' + this.minutes.toString() + ':' + this.seconds.toString());
       }
-    }, 1000);
+    }, 999);
   }
 
   clearCounter() {
-    console.log('clear');
+    //console.log('clear');
     clearInterval(this.interval);
   }
 
   stop() {
-    console.log('stop');
+    //console.log('stop');
     this.clearCounter();
   }
 
   reset() {
-    console.log('reset');
+    //console.log('reset');
     this.clearCounter();
     this.hours = 0;
     this.minutes = 0;
     this.seconds = 0;
   }
 
+  disableButton() {
+    let handler = false;
+    if (this.hours == 0 && this.minutes == 0 && this.seconds == 0) {
+      handler = true;
+    } else {
+      handler = false;
+    }
+
+    return handler;
+  }
+
   async checkValue(value, type) {
+    if (value == null) {
+      if (type == 'hours') {
+        this.hours = 0;
+      }
+      if (type == 'minutes') {
+        this.minutes = 0;
+      }
+      if (type == 'seconds') {
+        this.seconds = 0;
+      }
+    }
+
+    //console.log(value, type);
+
     let msg = 'Value cannot be negative or above 59';
 
     if (type == 'hours') {
