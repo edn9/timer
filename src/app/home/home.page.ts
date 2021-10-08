@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import * as moment from 'moment';
 import { AlertController } from '@ionic/angular';
 
 @Component({
@@ -8,60 +9,96 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  hours = 0;
-  minutes = 0;
-  seconds = 0;
+  public hours = 0;
+  public minutes = 0;
+  public seconds = 0;
   interval;
 
-  constructor(public alertController: AlertController, private titleService: Title) { }
+  constructor(
+    public alertController: AlertController,
+    private titleService: Title
+  ) {}
 
-  playAlert() {
+  timeAction(type, action) {
+    if (type == 'hours') {
+      if (action == 'add') {
+        this.hours++;
+      } else {
+        this.hours--;
+      }
+      this.checkValue(this.hours, 'hours');
+    } else if (type == 'minutes') {
+      if (action == 'add') {
+        this.minutes++;
+      } else {
+        this.minutes--;
+      }
+      this.checkValue(this.minutes, 'minutes');
+    } else {
+      if (action == 'add') {
+        this.seconds++;
+      } else {
+        this.seconds--;
+      }
+      this.checkValue(this.seconds, 'seconds');
+    }
+  }
+
+  async playAlert() {
     let audio = new Audio();
     audio.src = 'assets/sound/mixkit-fairy-bells-583.mp3';
     audio.load();
     audio.play();
+
+    let msg = 'Timer Completed!';
+
+    const alert = await this.alertController.create({
+      message: msg,
+      buttons: ['OK'],
+    });
+
+    await alert.present();
+
+    const { role } = await alert.onDidDismiss();
   }
 
-  play() {
-    this.clearCounter();
-    //console.log('play', this.hours, this.minutes, this.seconds);
+  start() {
+    var input = moment()
+      .add(this.hours, 'hours')
+      .add(this.minutes, 'minutes')
+      .add(this.seconds, 'seconds')
+      .format('HH:mm:ss')
+      .toString();
 
     this.interval = setInterval(() => {
-      if (this.hours === 0 && this.minutes === 0 && this.seconds === 0) {
+      var now = moment().format('HH:mm:ss').toString();
+
+      // console.log(input, now);
+
+      let res = moment
+        .utc(moment(input, 'HH:mm:ss').diff(moment(now, 'HH:mm:ss')))
+        .format('HH:mm:ss');
+      console.log(res);
+      this.hours = Number(res.split(':')[0]);
+      this.minutes = Number(res.split(':')[1]);
+      this.seconds = Number(res.split(':')[2]);
+
+      this.titleService.setTitle(res);
+      if (res == '00:00:00') {
+        this.stop();
         this.titleService.setTitle('Timer');
         this.playAlert();
-        this.clearCounter();
-      } else {
-        if (this.seconds === 0 && this.minutes > 0) {
-          this.seconds = 60;
-          this.minutes--;
-        }
-        if (this.seconds === 0 && this.minutes === 0 && this.hours > 0) {
-          this.seconds = 60;
-          this.minutes = 59;
-          this.hours--;
-        }
-        this.seconds--;
-
-        this.titleService.setTitle(this.hours.toString() + ':' + this.minutes.toString() + ':' + this.seconds.toString());
-        //console.log(this.hours.toString() + ':' + this.minutes.toString() + ':' + this.seconds.toString());
       }
-    }, 999);
-  }
-
-  clearCounter() {
-    //console.log('clear');
-    clearInterval(this.interval);
+    }, 1000);
   }
 
   stop() {
-    //console.log('stop');
-    this.clearCounter();
+    clearInterval(this.interval);
   }
 
   reset() {
-    //console.log('reset');
-    this.clearCounter();
+    this.titleService.setTitle('Timer');
+    this.stop();
     this.hours = 0;
     this.minutes = 0;
     this.seconds = 0;
@@ -91,14 +128,15 @@ export class HomePage {
       }
     }
 
-    //console.log(value, type);
-
     let msg = 'Value cannot be negative or above 59';
 
     if (type == 'hours') {
-      msg = 'Hours cannot be negative';
+      msg = 'Value cannot be negative or above 23';
       if (value < 0) {
         this.hours = 0;
+      } else if (value > 23) {
+        this.hours = 0;
+        value = 999;
       }
     }
 
