@@ -1,0 +1,110 @@
+<ion-content>
+  <ion-card class="center resizeMe">
+    <ion-button size="small"
+      color="{{toggleSudoDelHandler?'danger':'success'}}"
+      (click)="toggleSudoDel()"
+      >Delete without Warnings ({{toggleSudoDelHandler}})</ion-button
+    >
+    <ion-button size="small"
+      color="{{toggleLogsHandler?'success':'danger'}}"
+      (click)="toggleLogs()"
+      >Logs Save ({{toggleLogsHandler}})</ion-button
+    >
+  </ion-card>
+
+  <ion-card *ngIf="!showInfo">
+    <ion-card-header>
+      <div
+        style="text-align: center; justify-content: space-between"
+        class="center"
+      >
+        <ion-card-subtitle>About </ion-card-subtitle>
+        <ion-button
+          size="small"
+          color="dark"
+          fill="clear"
+          (click)="toggleInfo()"
+        >
+          <ion-icon name="chevron-down-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card *ngIf="showInfo">
+    <ion-card-header>
+      <div style="text-align: end">
+        <ion-button
+          size="small"
+          color="dark"
+          fill="clear"
+          (click)="toggleInfo()"
+        >
+          <ion-icon name="chevron-up-outline"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div
+        style="
+          width: 100%;
+          justify-content: center;
+          align-items: center;
+          display: flex;
+        "
+      >
+        <ion-img
+          style="width: 50px"
+          src="./assets/icon/clock.png"
+          alt="clock"
+        ></ion-img>
+      </div>
+
+      <ion-card-title style="text-align: center"> Timer Online </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-text>
+        Create your own timer with alarm and start/pause/stop/reset. <br />
+        Perfect for everyday activities such as cooking meals, taking quizzes,
+        doing homework, etc.</ion-text
+      >
+      <br />
+      <br />
+      <ion-text> Made with Ionic by edn9. </ion-text>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-list>
+        <ion-list-header>Logs</ion-list-header>
+        <hr style="background: #121212" />
+        <br />
+
+        <ion-text *ngIf="logList.length==0"> No Logs yet </ion-text>
+
+        <div *ngFor="let item of logList; let i = index">
+          <ion-text>{{i+1}}. {{item.dtCreated}}</ion-text>
+          <ion-item>
+            <ion-label>
+              <h2>{{item.title}}</h2>
+              <h3>{{item.log}}</h3>
+            </ion-label>
+          </ion-item>
+        </div>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div style="text-align: center">
+      <small>made by edn9 - v.0.0.5</small>
+    </div>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()" color="dark">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

@@ -1,32 +1,92 @@
-<ion-content [fullscreen]="true">
+<ion-header>
+  <ion-toolbar>
+    <div class="center">
+      <ion-img
+        style="width: 25px; margin-left: 25px"
+        src="./assets/icon/clock.png"
+        alt="clock"
+      ></ion-img>
+      <ion-title> Timer Online </ion-title>
+    </div>
+
+    <ion-buttons slot="end">
+      <ion-button *ngIf="list.length>0" color="danger" (click)="hardReset()">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-button>
+      <ion-button color="success" (click)="add()">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+      <ion-button color="dark" (click)="info()">
+        <ion-icon name="settings-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
   <div id="container">
-    <ion-card>
+    <ion-card *ngIf="list.length==0">
       <ion-card-content>
-        <ion-card-header>
-          <div
-            style="
-              width: 100%;
-              justify-content: center;
-              align-items: center;
-              display: flex;
-            "
-          >
-            <ion-img
-              style="width: 50px"
-              src="./assets/icon/clock.png"
-              alt="clock"
-            ></ion-img>
-          </div>
+        No Timers created yet...
+        <br />
+        <br />
+        <ion-button color="success" (click)="add()">Start</ion-button>
+      </ion-card-content>
+    </ion-card>
 
-          <ion-card-title> Timer Online </ion-card-title>
-
-          <small>
-            Create your own timer with alarm and start/pause/stop/reset. <br />
-            Perfect for everyday activities such as cooking meals, taking
-            quizzes, doing homework, etc.</small
+    <ion-card *ngFor="let item of list; let i = index">
+      <ion-card-header class="center" style="justify-content: space-between">
+        <div>{{i+1}}. Timer</div>
+        <div>
+          <ion-badge color="dark" *ngIf="item.loop"
+            >{{item.loopCounter}} ∞</ion-badge
           >
-        </ion-card-header>
-        <hr style="background: #121212" />
+          <ion-badge *ngIf="item.state=='running'" color="success"
+            >{{item.state}}</ion-badge
+          >
+          <ion-badge *ngIf="item.state=='paused'" color="warning"
+            >{{item.state}}</ion-badge
+          >
+          <ion-badge *ngIf="item.state=='waiting'" color="dark"
+            >{{item.state}}</ion-badge
+          >
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="center">
+          <ion-avatar *ngIf="item.avatar" class="ion-margin-center">
+            <img [src]="item.avatar" />
+          </ion-avatar>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Avatar</ion-label>
+          <ion-input
+            [(ngModel)]="item.avatar"
+            placeholder="Insert an Avatar for the Timer"
+            (change)="saveStorage()"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Title</ion-label>
+          <ion-input
+            [(ngModel)]="item.title"
+            placeholder="Insert your Title"
+            (change)="saveStorage()"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Description</ion-label>
+          <ion-textarea
+            [(ngModel)]="item.description"
+            rows="3"
+            cols="20"
+            placeholder="Enter any notes here..."
+            (change)="saveStorage()"
+          ></ion-textarea>
+        </ion-item>
 
         <div
           style="
@@ -39,51 +99,58 @@
           <ion-item style="width: 100%">
             <ion-input
               class="timer"
-              [(ngModel)]="hours"
+              [(ngModel)]="item.hours"
               type="number"
               min="0"
               max="23"
-              (change)="checkValue(hours,'hours')"
+              (change)="checkValue(item,'hours')"
             ></ion-input
             >:
           </ion-item>
           <ion-item style="width: 100%">
             <ion-input
               class="timer"
-              [(ngModel)]="minutes"
+              [(ngModel)]="item.minutes"
               type="number"
               min="0"
               max="59"
-              (change)="checkValue(minutes,'minutes')"
+              (change)="checkValue(item,'minutes')"
             ></ion-input
             >:
           </ion-item>
           <ion-item style="width: 100%">
             <ion-input
               class="timer"
-              [(ngModel)]="seconds"
+              [(ngModel)]="item.seconds"
               type="number"
               min="0"
               max="59"
-              (change)="checkValue(seconds,'seconds')"
+              (change)="checkValue(item,'seconds')"
             ></ion-input>
           </ion-item>
         </div>
         <div>
           <ion-button
-            (click)="start()"
+            (click)="start(item)"
             color="success"
-            [disabled]="disableButton()"
-            >Play</ion-button
-          >
-          <ion-button (click)="stop()" color="danger">Pause</ion-button>
-          <ion-button (click)="reset()" color="dark">Reset</ion-button>
+            [disabled]="disableButton(item)"
+            ><ion-icon name="play-outline"></ion-icon
+          ></ion-button>
+          <ion-button (click)="stop(item)" color="warning">
+            <ion-icon name="stop-outline"></ion-icon>
+          </ion-button>
+          <ion-button (click)="reset(item)" color="dark"
+            ><ion-icon name="refresh-outline"></ion-icon
+          ></ion-button>
+          <ion-button color="dark" (click)="loop(item)">
+            <ion-icon name="infinite-outline"></ion-icon>
+          </ion-button>
+          <ion-button (click)="delConfirm(i)" color="danger">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
         </div>
-
-        <hr style="background: #121212" />
-
-        <small>made by edn9 - v.0.0.4</small>
       </ion-card-content>
     </ion-card>
+    <ion-button *ngIf="list.length>0" color="success" (click)="add()">More Timers</ion-button>
   </div>
 </ion-content>
